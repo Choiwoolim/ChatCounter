@@ -4,11 +4,20 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.util.ArrayList;
 import java.util.Scanner;
+import java.util.HashMap;
 
 public class DataReader {
 
+	static HashMap<String, ArrayList<Message>> messages = new HashMap<String, ArrayList<Message>>();
 	
-	public ArrayList<String> getData(String strDir){
+
+	public HashMap<String, ArrayList<Message>> getData(String strDir){
+		File myDir = getDirectory(strDir);
+		File[] files = getListOfFilesFromDirectory(myDir);
+		readFiles(files);
+		return messages;
+	}
+/*	public ArrayList<String> getData(String strDir){
 		
 		//(1)get Directory
 		File mydir = getDirectory(strDir);
@@ -21,14 +30,14 @@ public class DataReader {
 		
 		return messages;
 		
-	}
+	}*/
 	
-	private File getDirectory(String strDir) {
+	private static File getDirectory(String strDir) {
 		File myDirectory = new File(strDir);
 		return myDirectory;
 	}
 	
-	private File[] getListOfFilesFromDirectory(File dataDir) {
+	private static File[] getListOfFilesFromDirectory(File dataDir) {
 		
 		for(File file:dataDir.listFiles()) {
 			System.out.println(file.getAbsolutePath());
@@ -63,13 +72,17 @@ public class DataReader {
 	public File[] getListOfFiles(File dataDir) {
 		return dataDir.listFiles();
 	}
-	public ArrayList<String> readFiles(File[] files){
-		ArrayList<String> messages = new ArrayList<String>();
-		
-		//Same logic that read files must be here
-		
-		return messages;
+
+	public void readFiles(File[] files) {
+		File file = null;
+		for(int i=0; i<files.length-1; i++) {
+			file = files[i];
+			System.out.println("Read a file: " + file.getName());
+			if(file.getName().endsWith(".csv"))
+				DataReaderForCSV.getMessagesFromCSVFiles(file);
+			else if(file.getName().endsWith(".txt"))
+				DataReaderForTXT.getMessagesFromTXTFiles(file);
+		}
 	}
-		
 
 }
